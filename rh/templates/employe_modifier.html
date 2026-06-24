@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Modifier un employé{% endblock %}
+{% block page_title %}Modifier {{ employe.nom }} {{ employe.prenom }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="bi bi-pencil"></i> Modifier l'employé</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.matricule.label }}</label>
+                            {{ form.matricule }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.nom.label }}</label>
+                            {{ form.nom }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.prenom.label }}</label>
+                            {{ form.prenom }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.telephone.label }}</label>
+                            {{ form.telephone }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.email.label }}</label>
+                            {{ form.email }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.poste.label }}</label>
+                            {{ form.poste }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.date_embauche.label }}</label>
+                            {{ form.date_embauche }}
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.departement.label }}</label>
+                            {{ form.departement }}
+                        </div>
+                    </div>
+                    <div class="mt-4 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg"></i> Enregistrer</button>
+                        <a href="{% url 'employe_list' %}" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left"></i> Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

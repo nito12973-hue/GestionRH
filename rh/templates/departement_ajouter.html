@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Ajouter un département{% endblock %}
+{% block page_title %}Ajouter un département{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0"><i class="bi bi-building-add"></i> Nouveau département</h5>
+            </div>
+            <div class="card-body p-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.nom.label }}</label>
+                        {{ form.nom }}
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label">{{ form.description.label }}</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary px-4"><i class="bi bi-check-lg"></i> Enregistrer</button>
+                        <a href="{% url 'departement_list' %}" class="btn btn-outline-secondary px-4"><i class="bi bi-arrow-left"></i> Annuler</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

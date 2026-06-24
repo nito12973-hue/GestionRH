@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Employés{% endblock %}
+{% block page_title %}Employés{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'employe_create' %}" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Ajouter</a>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="card-title mb-0"><i class="bi bi-people-fill"></i> Liste des employés</h5>
+    </div>
+    <div class="card-body">
+        <div class="search-box mb-3">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="searchEmploye" class="form-control" placeholder="Rechercher par matricule, nom, prénom ou poste...">
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover" id="tableEmploye">
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Téléphone</th>
+                        <th>Email</th>
+                        <th>Poste</th>
+                        <th>Département</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for employe in employes %}
+                    <tr class="employe-row">
+                        <td><span class="badge bg-primary">{{ employe.matricule }}</span></td>
+                        <td><strong>{{ employe.nom }}</strong></td>
+                        <td>{{ employe.prenom }}</td>
+                        <td><i class="bi bi-telephone text-muted me-1"></i>{{ employe.telephone }}</td>
+                        <td><i class="bi bi-envelope text-muted me-1"></i>{{ employe.email }}</td>
+                        <td><span class="badge bg-info">{{ employe.poste }}</span></td>
+                        <td><span class="badge bg-secondary">{{ employe.departement.nom }}</span></td>
+                        <td>
+                            <div class="btn-group" role="group">
+                                <a href="{% url 'employe_update' employe.pk %}" class="btn btn-sm btn-warning" title="Modifier"><i class="bi bi-pencil"></i></a>
+                                <a href="{% url 'employe_delete' employe.pk %}" class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center py-5">
+                            <div class="text-muted">
+                                <i class="bi bi-people" style="font-size: 3.5rem;"></i>
+                                <p class="mt-2 mb-0 fs-5">Aucun employé enregistré</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div id="noResult" class="text-center py-4 text-muted" style="display: none;">
+            <i style="font-size: 3rem;">🔍</i>
+            <p class="mt-2 mb-0">Aucun résultat trouvé</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchEmploye');
+    const rows = document.querySelectorAll('.employe-row');
+    
+    searchInput.addEventListener('input', function() {
+        const filter = searchInput.value.toLowerCase();
+        let visible = false;
+        
+        rows.forEach(function(row) {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(filter)) {
+                row.style.display = '';
+                visible = true;
+            } else {
+                row.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('noResult').style.display = visible ? 'none' : 'block';
+    });
+});
+</script>
+{% endblock %}
