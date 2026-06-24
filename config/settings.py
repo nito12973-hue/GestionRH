@@ -65,7 +65,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Base de données PostgreSQL
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'gestionRH',
         'USER': 'postgres',
         'PASSWORD': 'nito2005',

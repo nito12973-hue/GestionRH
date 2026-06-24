@@ -342,13 +342,13 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end">
                             <li>
-                                <form method="post" action="{% url 'logout' %}" style="margin: 0;">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item"><i class="bi bi-box-arrow-right me-2"></i> D&eacute;connexion</button>
-                                </form>
+                                <a href="{% url 'logout' %}" class="dropdown-item" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="bi bi-box-arrow-right me-2"></i> D&eacute;connexion</a>
                             </li>
                         </ul>
                     </li>
+                    <form id="logout-form" method="post" action="{% url 'logout' %}" style="display: none;">
+                        {% csrf_token %}
+                    </form>
                 </ul>
             </div>
         </div>
