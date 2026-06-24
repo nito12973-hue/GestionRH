@@ -1,0 +1,26 @@
+Commandes pour lancer le projet GESTION-RH
+
+1. Creer et activer l'environnement virtuel (si necessaire) :
+   python -m venv venv
+   venv\Scripts\activate
+
+2. Installer les dependances :
+   pip install -r requirements.txt
+
+3. Appliquer les migrations :
+   python manage.py migrate
+
+4. Creer un super-utilisateur (optionnel, pour l'admin) :
+   python manage.py createsuperuser
+
+5. Lancer le serveur :
+   python manage.py runserver
+
+Acces :
+- Application : http://127.0.0.1:8000/
+- Admin      : http://127.0.0.1:8000/admin/
+- Login      : http://127.0.0.1:8000/login/
+
+Prerequis :
+- PostgreSQL en local sur 127.0.0.1:5432
+- Base de donnees : gestionRH (utilisateur postgres, mot de passe : nito2005)
