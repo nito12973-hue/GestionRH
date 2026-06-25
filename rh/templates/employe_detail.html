@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ employe.nom }} {{ employe.prenom }}{% endblock %}
+{% block page_title %}Détail Employé{% endblock %}
+
+{% block page_actions %}
+<a href="{% url 'employe_list' %}" class="btn btn-outline-secondary"><i class="bi bi-arrow-left"></i> Retour</a>
+{% if contrat %}
+<a href="{% url 'fiche_paie_pdf' employe.pk %}" class="btn btn-primary"><i class="bi bi-file-pdf"></i> Fiche de paie</a>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- En-tête -->
+        <div class="carte mb-4 text-center">
+            <div class="corps-carte">
+                <div class="avatar-detail">{{ employe.nom|first }}{{ employe.prenom|first }}</div>
+                <h4 class="mb-2">{{ employe.nom }} {{ employe.prenom }}</h4>
+                <p class="texte-secondaire-clair mb-0">{{ employe.poste }}</p>
+                <div class="mt-3">
+                    <span class="badge bg-primary">{{ employe.matricule }}</span>
+                    <span class="badge bg-secondary">{{ employe.departement.nom }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations -->
+        <div class="carte">
+            <div class="en-tete-carte">
+                <h5 class="titre-carte"><i class="bi bi-info-circle me-2"></i>Informations</h5>
+            </div>
+            <div class="corps-carte">
+                <ul class="liste-details">
+                    <li class="element-detail">
+                        <span class="libelle-detail">Matricule</span>
+                        <span class="valeur-detail">{{ employe.matricule }}</span>
+                    </li>
+                    <li class="element-detail">
+                        <span class="libelle-detail">Téléphone</span>
+                        <span class="valeur-detail">{{ employe.telephone }}</span>
+                    </li>
+                    <li class="element-detail">
+                        <span class="libelle-detail">Email</span>
+                        <span class="valeur-detail">{{ employe.email }}</span>
+                    </li>
+                    <li class="element-detail">
+                        <span class="libelle-detail">Département</span>
+                        <span class="valeur-detail">{{ employe.departement.nom }}</span>
+                    </li>
+                    <li class="element-detail">
+                        <span class="libelle-detail">Date embauche</span>
+                        <span class="valeur-detail">{{ employe.date_embauche|date:"d/m/Y" }}</span>
+                    </li>
+                    {% if contrat %}
+                    <li class="element-detail">
+                        <span class="libelle-detail">Type contrat</span>
+                        <span class="valeur-detail">{{ contrat.get_type_contrat_display }}</span>
+                    </li>
+                    <li class="element-detail">
+                        <span class="libelle-detail">Salaire</span>
+                        <span class="valeur-detail">{{ contrat.salaire }} FCFA</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="d-flex gap-2 mt-4 justify-content-center">
+            <a href="{% url 'employe_update' employe.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil me-2"></i>Modifier
+            </a>
+            <a href="{% url 'employe_delete' employe.pk %}" class="btn btn-danger">
+                <i class="bi bi-trash me-2"></i>Supprimer
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

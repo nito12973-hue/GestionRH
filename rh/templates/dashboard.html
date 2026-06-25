@@ -4,50 +4,208 @@
 {% block page_title %}Tableau de bord{% endblock %}
 
 {% block content %}
+<!-- Statistiques principales -->
 <div class="row g-4 mb-4">
-    <div class="col-sm-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="bi bi-people-fill"></i></div>
-            <div class="stat-number">{{ total_employes }}</div>
-            <div class="stat-label">Employés</div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="bi bi-building"></i></div>
-            <div class="stat-number">{{ total_departements }}</div>
-            <div class="stat-label">Départements</div>
-        </div>
-    </div>
-    <div class="col-sm-6 col-xl-4">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="bi bi-file-earmark-text"></i></div>
-            <div class="stat-number">{{ total_contrats }}</div>
-            <div class="stat-label">Contrats</div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-12">
-        <div class="card">
-            <div class="card-header" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <h5 class="card-title mb-0"><i class="bi bi-lightning-charge"></i> Actions rapides</h5>
+    <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="0">
+        <div class="carte-statistique stat-cyan">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icone-stat"><i class="bi bi-people-fill"></i></div>
+                <div>
+                    <div class="valeur-stat" data-cible="{{ total_employes }}">{{ total_employes }}</div>
+                    <div class="libelle-stat">Employés</div>
+                </div>
             </div>
-            <div class="card-body p-4">
-                <div class="row g-3">
-                    <div class="col-md-4 col-sm-12">
-                        <a href="{% url 'employe_create' %}" class="btn btn-primary w-100 py-3 fs-5"><i class="bi bi-person-plus me-2"></i> Employé</a>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <a href="{% url 'departement_create' %}" class="btn btn-success w-100 py-3 fs-5"><i class="bi bi-building-add me-2"></i> Département</a>
-                    </div>
-                    <div class="col-md-4 col-sm-12">
-                        <a href="{% url 'contrat_create' %}" class="btn btn-info text-white w-100 py-3 fs-5"><i class="bi bi-file-earmark-plus me-2"></i> Contrat</a>
-                    </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+        <div class="carte-statistique stat-violet">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icone-stat"><i class="bi bi-building"></i></div>
+                <div>
+                    <div class="valeur-stat" data-cible="{{ total_departements }}">{{ total_departements }}</div>
+                    <div class="libelle-stat">Départements</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+        <div class="carte-statistique stat-bleu">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icone-stat"><i class="bi bi-file-earmark-text"></i></div>
+                <div>
+                    <div class="valeur-stat" data-cible="{{ total_contrats }}">{{ total_contrats }}</div>
+                    <div class="libelle-stat">Contrats</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
+        <div class="carte-statistique stat-rose">
+            <div class="d-flex align-items-center gap-3">
+                <div class="icone-stat"><i class="bi bi-currency-euro"></i></div>
+                <div>
+                    <div class="valeur-stat">{{ salaire_moyen|floatformat:0 }}</div>
+                    <div class="libelle-stat">Salaire Moyen</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Graphiques -->
+<div class="row g-4 mb-4">
+    <div class="col-lg-6" data-aos="fade-right" data-aos-delay="400">
+        <div class="carte">
+            <div class="en-tete-carte">
+                <h5 class="titre-carte"><i class="bi bi-pie-chart me-2"></i>Répartition par Département</h5>
+            </div>
+            <div class="corps-carte">
+                <canvas id="chartDepartement"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-6" data-aos="fade-left" data-aos-delay="500">
+        <div class="carte">
+            <div class="en-tete-carte">
+                <h5 class="titre-carte"><i class="bi bi-bar-chart me-2"></i>Répartition par Contrat</h5>
+            </div>
+            <div class="corps-carte">
+                <canvas id="chartContrat"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Derniers employés -->
+<div class="row">
+    <div class="col-12" data-aos="fade-up" data-aos-delay="600">
+        <div class="carte">
+            <div class="en-tete-carte">
+                <h5 class="titre-carte"><i class="bi bi-clock-history me-2"></i>Derniers Employés Ajoutés</h5>
+            </div>
+            <div class="corps-carte">
+                {% if derniers_employes %}
+                <div class="table-responsive">
+                    <table class="tableau table">
+                        <thead>
+                            <tr>
+                                <th>Matricule</th>
+                                <th>Nom</th>
+                                <th>Prénom</th>
+                                <th>Poste</th>
+                                <th>Département</th>
+                                <th>Date embauche</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employe in derniers_employes %}
+                            <tr>
+                                <td><span class="badge bg-primary">{{ employe.matricule }}</span></td>
+                                <td><strong>{{ employe.nom }}</strong></td>
+                                <td>{{ employe.prenom }}</td>
+                                <td><span class="badge bg-info">{{ employe.poste }}</span></td>
+                                <td><span class="badge bg-secondary">{{ employe.departement.nom }}</span></td>
+                                <td>{{ employe.date_embauche|date:"d/m/Y" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="etat-vide">
+                    <i class="bi bi-people"></i>
+                    <p>Aucun employé enregistré</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAB (Floating Action Button) -->
+<a href="{% url 'employe_create' %}" class="btn btn-primary position-fixed bottom-0 end-0 m-4 rounded-circle" style="width: 60px; height: 60px; z-index: 1050;">
+    <i class="bi bi-plus-lg fs-4"></i>
+</a>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Particles.js sur la page d'accueil
+tsParticles.load("particles-js", {
+    background: { opacity: 0 },
+    fpsLimit: 60,
+    particles: {
+        color: { value: ["#00F5D4", "#9B5DE5", "#3D9EFF"] },
+        move: { enable: true, speed: 1, outModes: { default: "out" } },
+        life: { duration: { sync: true, value: 3 } },
+        size: { value: 2 },
+        opacity: { value: 0.3 },
+    },
+    interactivity: {
+        events: { onHover: { enable: true, mode: "repulse" } }
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphique Départements
+    const ctxDept = document.getElementById('chartDepartement');
+    if (ctxDept) {
+        new Chart(ctxDept, {
+            type: 'doughnut',
+            data: {
+                labels: [{% for dept in employes_par_dept %}'{{ dept.nom }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    data: [{% for dept in employes_par_dept %}{{ dept.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: ['#00F5D4', '#9B5DE5', '#3D9EFF', '#F72585', '#fbbf24'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: { color: '#8B949E' }
+                    }
+                }
+            }
+        });
+    }
+
+    // Graphique Contrats
+    const ctxContrat = document.getElementById('chartContrat');
+    if (ctxContrat) {
+        new Chart(ctxContrat, {
+            type: 'bar',
+            data: {
+                labels: [{% for contrat in contrats_par_type %}'{{ contrat.label }}'{% if not forloop.last %},{% endif %}{% endfor %}],
+                datasets: [{
+                    label: 'Nombre de contrats',
+                    data: [{% for contrat in contrats_par_type %}{{ contrat.count }}{% if not forloop.last %},{% endif %}{% endfor %}],
+                    backgroundColor: ['#00F5D4', '#9B5DE5', '#3D9EFF'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: '#8B949E' },
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    x: {
+                        ticks: { color: '#8B949E' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

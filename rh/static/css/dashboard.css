@@ -1,0 +1,138 @@
+/* CSS supplémentaire pour les effets WAOUH */
+
+/* Particles.js container */
+#particles-js {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Animation confettis */
+.confetti-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-violet));
+    opacity: 0.9;
+    animation: confetti-fall 3s linear forwards;
+}
+
+@keyframes confetti-fall {
+    to {
+        transform: translateY(100vh) rotate(720deg);
+        opacity: 0;
+    }
+}
+
+/* Badge statut contrat */
+.badge-statut.actif {
+    background: rgba(25, 135, 84, 0.2) !important;
+    color: #4ade80 !important;
+    border: 1px solid rgba(74, 222, 128, 0.3) !important;
+    animation: pulse-success 2s infinite;
+}
+
+.badge-statut.expire {
+    background: rgba(220, 53, 69, 0.2) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(248, 113, 113, 0.3) !important;
+}
+
+@keyframes pulse-success {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(74, 222, 128, 0); }
+}
+
+/* Bouton avec effet pulse */
+.btn-pulse {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(0, 245, 212, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(0, 245, 212, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(0, 245, 212, 0); }
+}
+
+/* Checkbox animé */
+.form-check-input.anime {
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid var(--bordure-couleur);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.form-check-input.anime:checked {
+    background: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+}
+
+/* Loader skeleton */
+.skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Typing effect */
+.typed-cursor {
+    color: var(--neon-cyan);
+    font-weight: 100;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Card glassmorphism amélioré */
+.card.glass {
+    background: rgba(18, 24, 32, 0.6) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.card.glass:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(0, 245, 212, 0.25), 0 0 40px rgba(155, 93, 229, 0.15);
+}
+
+/* Glow effect */
+.glow {
+    box-shadow: 0 0 20px rgba(0, 245, 212, 0.5);
+    transition: box-shadow 0.3s ease;
+}
+
+.glow:hover {
+    box-shadow: 0 0 30px rgba(155, 93, 229, 0.7);
+}
+
+/* Hover-lift */
+.hover-lift {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+}

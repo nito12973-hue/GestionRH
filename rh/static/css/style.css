@@ -1,11 +1,7 @@
-/* ============================================================
-   GESTION RH — Design Sombre Néon Premium
-   Bootstrap 5 + CSS Personnalisé
-   Tous les noms de classes et commentaires en FRANÇAIS
-   ============================================================ */
 
-/* ── Police Google ── */
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+/* ── Police Google Premium ── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
 
 /* ── Variables CSS ── */
 :root {
@@ -40,6 +36,124 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   font-size: 0.92rem;
+  position: relative;
+}
+
+/* ── Dégradé animé en arrière-plan ── */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    var(--neon-violet),
+    var(--neon-cyan),
+    var(--neon-bleu),
+    var(--neon-rose),
+    var(--neon-violet)
+  );
+  background-size: 400% 400%;
+  animation: gradientAnimation 15s ease infinite;
+  opacity: 0.03;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes gradientAnimation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── Blob animé ── */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.15;
+  z-index: -1;
+  animation: blobFloat 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.blob-1 {
+  width: 400px;
+  height: 400px;
+  background: var(--neon-violet);
+  top: 10%;
+  left: 10%;
+  animation-delay: 0s;
+}
+
+.blob-2 {
+  width: 300px;
+  height: 300px;
+  background: var(--neon-cyan);
+  top: 60%;
+  right: 10%;
+  animation-delay: -5s;
+}
+
+.blob-3 {
+  width: 350px;
+  height: 350px;
+  background: var(--neon-rose);
+  bottom: 10%;
+  left: 30%;
+  animation-delay: -10s;
+}
+
+@keyframes blobFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(50px, -50px) scale(1.1);
+  }
+  50% {
+    transform: translate(-30px, 30px) scale(0.9);
+  }
+  75% {
+    transform: translate(-50px, -30px) scale(1.05);
+  }
+}
+
+/* ── Curseur personnalisé ── */
+.curseur-personnalise {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--neon-cyan);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+  mix-blend-mode: difference;
+}
+
+.curseur-personnalise.hover {
+  transform: scale(2);
+  background: rgba(0, 245, 212, 0.1);
+  border-color: var(--neon-violet);
+}
+
+.curseur-personnalise.click {
+  transform: scale(0.8);
+  background: rgba(0, 245, 212, 0.3);
+}
+
+/* Cacher le curseur par défaut sur desktop */
+@media (pointer: fine) {
+  body {
+    cursor: none;
+  }
+  
+  a, button, input, select, textarea, .btn, .nav-link, .dropdown-item {
+    cursor: none;
+  }
 }
 
 /* ══════════════════════════════════════════════
@@ -290,7 +404,7 @@ body {
   position: relative;
   overflow: hidden;
   cursor: default;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 .carte-statistique::before {
   content: '';
@@ -299,9 +413,27 @@ body {
   height: 3px;
   border-radius: var(--rayon-bord) var(--rayon-bord) 0 0;
 }
+.carte-statistique::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rayon-bord);
+  padding: 2px;
+  background: linear-gradient(135deg, var(--neon-cyan), var(--neon-violet));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
 .carte-statistique:hover {
-  transform: translateY(-5px);
-  box-shadow: var(--ombre-neon), var(--ombre-carte);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px rgba(0, 245, 212, 0.15), 0 0 30px rgba(155, 93, 229, 0.1);
+  border-color: rgba(0, 245, 212, 0.3) !important;
+}
+.carte-statistique:hover::after {
+  opacity: 0.6;
 }
 .carte-statistique .icone-stat {
   width: 50px; height: 50px;

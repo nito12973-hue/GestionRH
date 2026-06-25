@@ -4,33 +4,24 @@ Configuration du projet Django Gestion RH
 
 from pathlib import Path
 import os
+from django.core.management.utils import get_random_secret_key
 
 # Chemin de base du projet
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Clé secrète (à changer en production)
-SECRET_KEY = 'django-insecure-clé-secrète-à-changer-en-production'
+# Clé secrète (depuis variable d'environnement)
+SECRET_KEY = os.environ.get('SECRET_KEY', get_random_secret_key())
 
 # Mode debug (False en production)
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
 # Hôtes autorisés
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '*').split(',')
 
-# Applications installées
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'rh',  # Notre application unique
-]
-
-# Middleware
+# Whitenoise pour les fichiers statiques
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -62,16 +53,22 @@ TEMPLATES = [
 # Configuration WSGI
 WSGI_APPLICATION = 'config.wsgi.application'
 
-# Base de données PostgreSQL
+# Applications installées
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'rh',  # Notre application unique
+]
+
+# Base de données - PostgreSQL via DATABASE_URL (Render) ou locale
+import dj_database_url
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gestionRH',
-        'USER': 'postgres',
-        'PASSWORD': 'nito2005',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL', 'postgres://postgres:nito2005@127.0.0.1:5432/gestionRH'))
 }
 
 # Validation des mots de passe
@@ -102,6 +99,7 @@ STATICFILES_DIRS = [
     BASE_DIR / 'rh' / 'static',
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Fichiers médias
 MEDIA_URL = 'media/'

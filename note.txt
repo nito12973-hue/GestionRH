@@ -17,10 +17,10 @@ Commandes pour lancer le projet GESTION-RH
    python manage.py runserver
 
 Acces :
-- Application : http://127.0.0.1:8000/
-- Admin      : http://127.0.0.1:8000/admin/
-- Login      : http://127.0.0.1:8000/login/
+ Application : http://127.0.0.1:8000/
+ Admin      : http://127.0.0.1:8000/admin/
+ Login      : http://127.0.0.1:8000/login/
 
 Prerequis :
-- PostgreSQL en local sur 127.0.0.1:5432
-- Base de donnees : gestionRH (utilisateur postgres, mot de passe : nito2005)
+ PostgreSQL en local sur 127.0.0.1:5432
+ Base de donnees : gestionRH (utilisateur postgres, mot de passe : nito2005)

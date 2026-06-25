@@ -14,6 +14,7 @@ urlpatterns = [
     path('departements/<int:pk>/supprimer/', views.departement_delete, name='departement_delete'),
     
     path('employes/', views.employe_list, name='employe_list'),
+    path('employes/<int:pk>/', views.employe_detail, name='employe_detail'),
     path('employes/ajouter/', views.employe_create, name='employe_create'),
     path('employes/<int:pk>/modifier/', views.employe_update, name='employe_update'),
     path('employes/<int:pk>/supprimer/', views.employe_delete, name='employe_delete'),
@@ -22,4 +23,7 @@ urlpatterns = [
     path('contrats/ajouter/', views.contrat_create, name='contrat_create'),
     path('contrats/<int:pk>/modifier/', views.contrat_update, name='contrat_update'),
     path('contrats/<int:pk>/supprimer/', views.contrat_delete, name='contrat_delete'),
+    
+    path('export/employes/', views.export_employes_excel, name='export_employes_excel'),
+    path('fiche-paie/<int:pk>/', views.fiche_paie_pdf, name='fiche_paie_pdf'),
 ]

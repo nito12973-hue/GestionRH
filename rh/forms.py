@@ -5,10 +5,11 @@ from .models import Departement, Employe, Contrat
 class DepartementForm(forms.ModelForm):
     class Meta:
         model = Departement
-        fields = ['nom', 'description']
+        fields = ['nom', 'description', 'responsable']
         widgets = {
             'nom': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du département'}),
             'description': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Description'}),
+            'responsable': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Nom du responsable'}),
         }
 
 

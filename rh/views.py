@@ -3,6 +3,13 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.db.models import Avg, Count, Q
+from django.http import HttpResponse, JsonResponse
+from openpyxl import Workbook
+from xhtml2pdf import pisa
+from io import BytesIO
+from django.template.loader import render_to_string
 from .models import Departement, Employe, Contrat
 from .forms import DepartementForm, EmployeForm, ContratForm
 
@@ -50,10 +57,31 @@ def dashboard(request):
     total_employes = Employe.objects.count()
     total_departements = Departement.objects.count()
     total_contrats = Contrat.objects.count()
+    
+    # Nouvelles statistiques
+    salaire_moyen = Contrat.objects.aggregate(Avg('salaire'))['salaire__avg'] or 0
+    derniers_employes = Employe.objects.select_related('departement').order_by('-date_embauche')[:5]
+    
+    # Répartition par département
+    employes_par_dept = []
+    for dept in Departement.objects.annotate(count=Count('employe')):
+        if dept.count > 0:
+            employes_par_dept.append({'nom': dept.nom, 'count': dept.count})
+    
+    # Répartition par type de contrat
+    contrats_par_type = []
+    for type_contrat, label in Contrat.TYPE_CONTRAT:
+        count = Contrat.objects.filter(type_contrat=type_contrat).count()
+        contrats_par_type.append({'label': label, 'count': count})
+    
     context = {
         'total_employes': total_employes,
         'total_departements': total_departements,
         'total_contrats': total_contrats,
+        'salaire_moyen': salaire_moyen,
+        'derniers_employes': derniers_employes,
+        'employes_par_dept': employes_par_dept,
+        'contrats_par_type': contrats_par_type,
     }
     return render(request, 'dashboard.html', context)
 
@@ -100,8 +128,39 @@ def departement_delete(request, pk):
 # Employés
 @login_required
 def employe_list(request):
-    employes = Employe.objects.all()
-    return render(request, 'employes.html', {'employes': employes})
+    employes_queryset = Employe.objects.select_related('departement').prefetch_related('contrat_set').all()
+    
+    # Recherche
+    recherche = request.GET.get('recherche', '')
+    if recherche:
+        employes_queryset = employes_queryset.filter(
+            Q(nom__icontains=recherche) |
+            Q(prenom__icontains=recherche) |
+            Q(matricule__icontains=recherche) |
+            Q(poste__icontains=recherche)
+        )
+    
+    # Filtre par département
+    departement_id = request.GET.get('departement', '')
+    if departement_id:
+        employes_queryset = employes_queryset.filter(departement_id=departement_id)
+    
+    # Filtre par type de contrat
+    type_contrat = request.GET.get('type_contrat', '')
+    if type_contrat:
+        employes_queryset = employes_queryset.filter(contrat__type_contrat=type_contrat)
+    
+    # Pagination (10 employés par page)
+    paginator = Paginator(employes_queryset.order_by('id'), 10)
+    page_number = request.GET.get('page', 1)
+    employes = paginator.get_page(page_number)
+    
+    return render(request, 'employes.html', {
+        'employes': employes,
+        'recherche': recherche,
+        'departements': Departement.objects.all(),
+        'type_contrat': type_contrat
+    })
 
 @login_required
 def employe_create(request):
@@ -136,6 +195,15 @@ def employe_delete(request, pk):
         messages.success(request, "Employé supprimé.")
         return redirect('employe_list')
     return render(request, 'employe_supprimer.html', {'employe': employe})
+
+@login_required
+def employe_detail(request, pk):
+    employe = get_object_or_404(Employe.objects.select_related('departement'), pk=pk)
+    contrat = employe.contrat_set.first()
+    return render(request, 'employe_detail.html', {
+        'employe': employe,
+        'contrat': contrat
+    })
 
 # Contrats
 @login_required
@@ -176,3 +244,56 @@ def contrat_delete(request, pk):
         messages.success(request, "Contrat supprimé.")
         return redirect('contrat_list')
     return render(request, 'contrat_supprimer.html', {'contrat': contrat})
+
+# Export Excel
+@login_required
+def export_employes_excel(request):
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Employés"
+    
+    headers = ['Matricule', 'Nom', 'Prénom', 'Email', 'Téléphone', 'Poste', 'Département', 'Date embauche']
+    ws.append(headers)
+    
+    for employe in Employe.objects.select_related('departement').all():
+        ws.append([
+            employe.matricule,
+            employe.nom,
+            employe.prenom,
+            employe.email,
+            employe.telephone,
+            employe.poste,
+            employe.departement.nom,
+            employe.date_embauche.strftime('%d/%m/%Y')
+        ])
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=employes.xlsx'
+    wb.save(response)
+    return response
+
+# Fiche de paie PDF
+@login_required
+def fiche_paie_pdf(request, pk):
+    employe = get_object_or_404(Employe.objects.select_related('departement'), pk=pk)
+    contrat = employe.contrat_set.first()
+    
+    if not contrat:
+        messages.error(request, "Aucun contrat trouvé pour cet employé.")
+        return redirect('employe_detail', pk=pk)
+    
+    html = render_to_string('fiche_paie_template.html', {
+        'employe': employe,
+        'contrat': contrat
+    })
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=fiche_paie_{employe.matricule}.pdf'
+    
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    if pisa_status.err:
+        return HttpResponse('Erreur lors de la génération du PDF')
+    
+    return response

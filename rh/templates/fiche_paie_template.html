@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body { font-family: 'Arial', sans-serif; color: #333; }
+        .header { text-align: center; border-bottom: 2px solid #00F5D4; padding-bottom: 20px; margin-bottom: 30px; }
+        .company-name { font-size: 24px; font-weight: bold; color: #00F5D4; }
+        .title { font-size: 20px; margin: 10px 0; }
+        .info-section { margin-bottom: 20px; }
+        .info-row { display: flex; margin-bottom: 8px; }
+        .info-label { font-weight: bold; width: 150px; }
+        .info-value { flex: 1; }
+        .salary-box { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .salary-amount { font-size: 28px; font-weight: bold; color: #00F5D4; }
+        .footer { margin-top: 40px; text-align: center; font-size: 12px; color: #666; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="company-name">ISEP AT - GESTION RH</div>
+        <div class="title">FICHE DE PAIE</div>
+        <div>Période : {{ contrat.date_debut|date:"F Y" }}</div>
+    </div>
+    
+    <div class="info-section">
+        <h3>Informations Employé</h3>
+        <div class="info-row">
+            <span class="info-label">Matricule :</span>
+            <span class="info-value">{{ employe.matricule }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Nom & Prénom :</span>
+            <span class="info-value">{{ employe.nom }} {{ employe.prenom }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Poste :</span>
+            <span class="info-value">{{ employe.poste }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Département :</span>
+            <span class="info-value">{{ employe.departement.nom }}</span>
+        </div>
+    </div>
+    
+    <div class="info-section">
+        <h3>Détails du Contrat</h3>
+        <div class="info-row">
+            <span class="info-label">Type :</span>
+            <span class="info-value">{{ contrat.get_type_contrat_display }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Date début :</span>
+            <span class="info-value">{{ contrat.date_debut|date:"d/m/Y" }}</span>
+        </div>
+        <div class="info-row">
+            <span class="info-label">Date fin :</span>
+            <span class="info-value">{{ contrat.date_fin|date:"d/m/Y"|default:"-" }}</span>
+        </div>
+    </div>
+    
+    <div class="salary-box">
+        <h3>Salaire</h3>
+        <div class="salary-amount">{{ contrat.salaire|floatformat:0 }} FCFA</div>
+        <p>Mensuel brut</p>
+    </div>
+    
+    <div class="footer">
+        <p>Document généré automatiquement par le système de Gestion RH ISEP AT</p>
+        <p>Date d'export : {% now "d/m/Y à H:i" %}</p>
+    </div>
+</body>
+</html>

@@ -1,16 +1,29 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Inscription{% endblock %}
 
 {% block auth_content %}
-<h2><i class="bi bi-building-fill"></i> Gestion RH</h2>
-<h4 class="mt-3">Créer un compte</h4>
+<div class="entete-authentification">
+    <div class="icone-logo-auth"><i class="bi bi-building-fill"></i></div>
+    <h1>GRH</h1>
+    <p>Créer un compte utilisateur</p>
+</div>
 <form method="post" class="mt-4">
     {% csrf_token %}
-    <div class="mb-3">{{ form.username.label_tag }} {{ form.username }}</div>
-    <div class="mb-3">{{ form.password1.label_tag }} {{ form.password1 }}</div>
-    <div class="mb-3">{{ form.password2.label_tag }} {{ form.password2 }}</div>
-    <button type="submit" class="btn btn-primary w-100"><i class="bi bi-person-plus"></i> S'inscrire</button>
+    <div class="mb-3">
+        <label class="etiquette-champ">{{ form.username.label }}</label>
+        {{ form.username }}
+    </div>
+    <div class="mb-3">
+        <label class="etiquette-champ">{{ form.password1.label }}</label>
+        {{ form.password1 }}
+    </div>
+    <div class="mb-4">
+        <label class="etiquette-champ">{{ form.password2.label }}</label>
+        {{ form.password2 }}
+    </div>
+    <button type="submit" class="btn btn-primary w-100 py-3"><i class="bi bi-person-plus me-2"></i> S'inscrire</button>
 </form>
-<p class="mt-3"><a href="{% url 'login' %}">Déjà un compte ? Se connecter</a></p>
+<p class="mt-3 text-center"><a href="{% url 'login' %}" class="lien-nav">Déjà un compte ? Se connecter</a></p>
 {% endblock %}
