@@ -13,21 +13,32 @@
 
 ### Étape 3: Configurer les identifiants admin
 
-**IMPORTANT:** Avant de cliquer sur "Create Web Service", configurez vos identifiants:
+**IMPORTANT:** Avant de cliquer sur "Create Web Service", configurez vos identifiants.
 
-1. Dans la section "Environment", cliquez sur "Advanced"
-2. Ajoutez ou modifiez ces variables:
+**⚠️ IMPORTANT: Choisissez "Environment" (pas "Environment Group")**
 
-| Variable | Valeur par défaut | Description |
-|----------|------------------|-------------|
-| `DJANGO_SUPERUSER_USERNAME` | `admin` | Votre nom d'utilisateur admin |
-| `DJANGO_SUPERUSER_PASSWORD` | `admin123456` | **CHANGEZ CECI!** Votre mot de passe admin |
+Sur Render, vous verrez plusieurs options:
+- ✅ **Environment** ← CHOISISSEZ CELUI-CI (simple, pour un seul service)
+- ❌ Linked Environment Group (pour plusieurs services liés)
+- ❌ Create Environment Group (pour créer un groupe)
+
+**Méthode simple (recommandée):**
+
+1. Dans la section "Environment" (pas "Environment Group"), cliquez sur "Add Environment Variable"
+2. Ajoutez les variables une par une:
+
+| Variable | Valeur par défaut | Votre valeur |
+|----------|------------------|--------------|
+| `DJANGO_SUPERUSER_USERNAME` | `admin` | Votre nom d'utilisateur |
+| `DJANGO_SUPERUSER_PASSWORD` | `admin123456` | **CHANGEZ CECI!** Votre mot de passe |
 | `DJANGO_SUPERUSER_EMAIL` | `admin@example.com` | Votre email |
 
 **Exemple:**
-- Username: `jean.dupont`
-- Password: `MonMotDePasseSecure123!`
-- Email: `jean.dupont@entreprise.com`
+- Variable: `DJANGO_SUPERUSER_USERNAME` → Valeur: `jean.dupont`
+- Variable: `DJANGO_SUPERUSER_PASSWORD` → Valeur: `MonMotDePasseSecure123!`
+- Variable: `DJANGO_SUPERUSER_EMAIL` → Valeur: `jean.dupont@entreprise.com`
+
+**Note:** Les autres variables (SECRET_KEY, DEBUG, ALLOWED_HOSTS, DATABASE_URL) sont configurées automatiquement par Render via `render.yaml`. Vous n'avez pas besoin de les modifier.
 
 ### Étape 4: Lancer le déploiement
 1. Cliquez sur "Create Web Service"
@@ -58,11 +69,14 @@
 
 Si vous voulez changer le mot de passe après le déploiement:
 
-### Option 1: Via Render Dashboard
+### Option 1: Via Render Dashboard (Simple)
+
 1. Allez sur votre service Render
-2. Cliquez sur "Environment"
-3. Modifiez `DJANGO_SUPERUSER_PASSWORD`
-4. Redéployez le service
+2. Cliquez sur l'onglet "Environment"
+3. Cliquez sur "Add Environment Variable"
+4. Modifiez `DJANGO_SUPERUSER_PASSWORD` avec votre nouveau mot de passe
+5. Cliquez sur "Save Changes"
+6. Render redéployera automatiquement votre application
 
 ### Option 2: Via l'application Django
 1. Connectez-vous avec l'ancien mot de passe
