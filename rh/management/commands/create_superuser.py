@@ -9,7 +9,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'admin')
-        password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123')
+        password = os.environ.get('DJANGO_SUPERUSER_PASSWORD', 'admin123456')
         email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'admin@example.com')
 
         if not User.objects.filter(username=username).exists():
@@ -18,8 +18,12 @@ class Command(BaseCommand):
                 email=email,
                 password=password
             )
-            self.stdout.write(self.style.SUCCESS(f'Superutilisateur "{username}" créé avec succès!'))
+            self.stdout.write(self.style.SUCCESS('=' * 60))
+            self.stdout.write(self.style.SUCCESS('SUPERUTILISATEUR CRÉÉ AVEC SUCCÈS!'))
+            self.stdout.write(self.style.SUCCESS('=' * 60))
             self.stdout.write(self.style.WARNING(f'Username: {username}'))
             self.stdout.write(self.style.WARNING(f'Password: {password}'))
+            self.stdout.write(self.style.WARNING(f'Email: {email}'))
+            self.stdout.write(self.style.SUCCESS('=' * 60))
         else:
             self.stdout.write(self.style.SUCCESS(f'Superutilisateur "{username}" existe déjà.'))

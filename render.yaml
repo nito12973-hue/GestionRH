@@ -18,7 +18,7 @@ services:
       - key: DJANGO_SUPERUSER_USERNAME
         value: admin
       - key: DJANGO_SUPERUSER_PASSWORD
-        generateValue: true
+        value: admin123456
       - key: DJANGO_SUPERUSER_EMAIL
         value: admin@gestionrh.onrender.com
 
